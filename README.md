@@ -18,7 +18,8 @@
 - Delete a card or clear Done, then change your mind: Undo in the toast, or <kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>Z</kbd>
 - Every move is announced to screen readers ("Moved “Ship it” to Done.")
 - Saved to `localStorage`; unreadable data falls back to the welcome board, and bad entries are dropped one by one
-- Light and dark themes, and a stacked layout for a 360px phone
+- A colour per column (sky, amber, emerald) carried through its cards, badge and drop highlight, in both light and dark themes
+- A stacked layout for a 360px phone
 
 ## Tech
 

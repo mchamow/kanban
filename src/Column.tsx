@@ -7,12 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils'
 import { MAX_TEXT, type Card, type ColumnId, type Direction } from './board'
 import { CardItem } from './CardItem'
-
-const ACCENT: Record<ColumnId, string> = {
-  todo: 'bg-sky-500',
-  doing: 'bg-amber-500',
-  done: 'bg-emerald-500',
-}
+import { COLUMN_STYLE } from './columnStyle'
 
 interface ColumnProps {
   id: ColumnId
@@ -39,16 +34,17 @@ interface ColumnProps {
 
 export function Column(props: ColumnProps) {
   const { id, title, cards, total, filtering, dragging, editingId } = props
+  const style = COLUMN_STYLE[id]
   const shown = dragging ? cards.filter((card) => card.id !== dragging.id) : cards
   const gap = dragging?.dropBefore
   const gapElement = dragging && (
-    <li aria-hidden className="rounded-lg border-2 border-dashed border-primary/30 bg-primary/5" style={{ height: dragging.height }} />
+    <li aria-hidden className={cn('rounded-lg border-2 border-dashed', style.gap)} style={{ height: dragging.height }} />
   )
 
   let empty: ReactNode = null
   if (shown.length === 0 && gap === undefined) {
     empty = (
-      <li className="flex min-h-20 items-center justify-center rounded-lg border border-dashed border-foreground/10 px-3 text-center text-xs text-muted-foreground">
+      <li className={cn('flex min-h-20 items-center justify-center rounded-lg border border-dashed border-current/25 px-3 text-center text-xs opacity-80', style.title)}>
         {filtering && total > 0 ? 'No matching cards' : 'No cards yet'}
       </li>
     )
@@ -59,23 +55,24 @@ export function Column(props: ColumnProps) {
       data-drop-column={id}
       aria-labelledby={`column-${id}`}
       className={cn(
-        'flex min-w-0 flex-col gap-2 rounded-xl bg-muted/60 p-2 ring-1 ring-foreground/5 transition-colors dark:bg-muted/30',
-        gap !== undefined && 'bg-primary/5 ring-primary/25 dark:bg-primary/10',
+        'flex min-w-0 flex-col gap-2 rounded-xl p-2 ring-1 transition-shadow',
+        style.column,
+        gap !== undefined && style.over,
       )}
     >
       <header className="flex h-8 items-center gap-2 px-1.5">
-        <span aria-hidden className={cn('size-2 rounded-full', ACCENT[id])} />
-        <h2 id={`column-${id}`} className="text-sm font-semibold">
+        <span aria-hidden className={cn('size-2.5 rounded-full', style.dot)} />
+        <h2 id={`column-${id}`} className={cn('text-sm font-semibold', style.title)}>
           {title}
         </h2>
-        <Badge variant="secondary" className="tabular-nums" aria-label={filtering ? `${cards.length} of ${total} cards` : `${total} cards`}>
+        <Badge className={cn('tabular-nums', style.badge)} aria-label={filtering ? `${cards.length} of ${total} cards` : `${total} cards`}>
           {filtering ? `${cards.length}/${total}` : total}
         </Badge>
         {id === 'done' && total > 0 && (
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button variant="ghost" size="icon-xs" aria-label={`Clear ${title}`} className="ml-auto text-muted-foreground" onClick={props.onClear} />
+                <Button variant="ghost" size="icon-xs" aria-label={`Clear ${title}`} className={cn('ml-auto', style.add)} onClick={props.onClear} />
               }
             >
               <Trash2 />
@@ -111,7 +108,7 @@ export function Column(props: ColumnProps) {
         <Button
           variant="ghost"
           size="sm"
-          className="justify-start text-muted-foreground"
+          className={cn('justify-start', style.add)}
           aria-label={`Add a card to ${title}`}
           onClick={() => props.onAddingChange(true)}
         >

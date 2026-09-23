@@ -13,6 +13,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { COLUMNS, MAX_TEXT, type Card, type ColumnId, type Direction } from './board'
+import { COLUMN_STYLE } from './columnStyle'
 import { neighbourCard } from './focus'
 
 export const CARD_HINT_ID = 'card-keyboard-hint'
@@ -38,6 +39,7 @@ interface CardItemProps {
 
 export function CardItem({ card, editing, onStartEdit, onEndEdit, onDelete, onMove, onNudge, onPointerDown }: CardItemProps) {
   const done = card.column === 'done'
+  const style = COLUMN_STYLE[card.column]
   const itemRef = useRef<HTMLLIElement>(null)
 
   const onKeyDown = (event: KeyboardEvent<HTMLLIElement>) => {
@@ -72,14 +74,15 @@ export function CardItem({ card, editing, onStartEdit, onEndEdit, onDelete, onMo
         if (!(event.target as HTMLElement).closest('button')) onStartEdit()
       }}
       className={cn(
-        'group/card relative flex cursor-grab items-start gap-1 rounded-lg bg-card py-2 pr-1 pl-1 text-sm shadow-xs ring-1 ring-foreground/10 transition-shadow outline-none select-none',
-        'hover:ring-foreground/20 focus-visible:ring-2 focus-visible:ring-ring',
+        'group/card relative flex cursor-grab items-start gap-1 rounded-lg border-l-4 bg-card py-2 pr-1 pl-0.5 text-sm shadow-xs ring-1 ring-foreground/10 transition-shadow outline-none select-none',
+        'hover:shadow-sm hover:ring-foreground/20 focus-visible:ring-2 focus-visible:ring-ring',
+        style.stripe,
       )}
     >
       <span
         data-drag-handle
         aria-hidden
-        className="flex h-5 w-5 shrink-0 touch-none items-center justify-center text-muted-foreground/50 group-hover/card:text-muted-foreground"
+        className={cn('flex h-5 w-5 shrink-0 touch-none items-center justify-center', style.handle)}
       >
         <GripVertical className="size-4" />
       </span>
@@ -155,7 +158,7 @@ function CardEditor({ card, onEnd }: { card: Card; onEnd: (text: string | null, 
   }
 
   return (
-    <li data-card-id={card.id} className="rounded-lg bg-card p-1.5 shadow-xs ring-2 ring-ring/60">
+    <li data-card-id={card.id} className={cn('rounded-lg border-l-4 bg-card p-1.5 shadow-xs ring-2 ring-ring/60', COLUMN_STYLE[card.column].stripe)}>
       <Textarea
         aria-label="Card text"
         defaultValue={card.text}
