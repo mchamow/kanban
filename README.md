@@ -18,7 +18,8 @@
 - Delete a card or clear Done, then change your mind: Undo in the toast, or <kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>Z</kbd>
 - Every move is announced to screen readers ("Moved “Ship it” to Done.")
 - Saved to `localStorage`; unreadable data falls back to the welcome board, and bad entries are dropped one by one
-- A colour per column (sky, amber, emerald) carried through its cards, badge and drop highlight, in both light and dark themes
+- Every card gets its own random colour with white text, from a palette where each shade passes WCAG AA contrast (it's a hash of the card's id, so the colour never changes)
+- A colour per column (sky, amber, emerald) for its background, badge and drop highlight, in both light and dark themes
 - A stacked layout for a 360px phone
 
 ## Tech
@@ -34,5 +35,5 @@ The board itself is a flat list of cards, and a card's place in its column is it
 ```bash
 pnpm install
 pnpm dev
-pnpm test   # 54 unit and component tests (Vitest)
+pnpm test   # 57 unit and component tests (Vitest)
 ```

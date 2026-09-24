@@ -13,7 +13,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { COLUMNS, MAX_TEXT, type Card, type ColumnId, type Direction } from './board'
-import { COLUMN_STYLE } from './columnStyle'
+import { cardColor } from './cardColor'
 import { neighbourCard } from './focus'
 
 export const CARD_HINT_ID = 'card-keyboard-hint'
@@ -39,7 +39,6 @@ interface CardItemProps {
 
 export function CardItem({ card, editing, onStartEdit, onEndEdit, onDelete, onMove, onNudge, onPointerDown }: CardItemProps) {
   const done = card.column === 'done'
-  const style = COLUMN_STYLE[card.column]
   const itemRef = useRef<HTMLLIElement>(null)
 
   const onKeyDown = (event: KeyboardEvent<HTMLLIElement>) => {
@@ -74,22 +73,22 @@ export function CardItem({ card, editing, onStartEdit, onEndEdit, onDelete, onMo
         if (!(event.target as HTMLElement).closest('button')) onStartEdit()
       }}
       className={cn(
-        'group/card relative flex cursor-grab items-start gap-1 rounded-lg border-l-4 bg-card py-2 pr-1 pl-0.5 text-sm shadow-xs ring-1 ring-foreground/10 transition-shadow outline-none select-none',
-        'hover:shadow-sm hover:ring-foreground/20 focus-visible:ring-2 focus-visible:ring-ring',
-        style.stripe,
+        'group/card relative flex cursor-grab items-start gap-1 rounded-lg py-2 pr-1 pl-1 text-sm text-white shadow-xs ring-1 ring-black/10 transition-shadow outline-none select-none',
+        'hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
       )}
+      style={{ backgroundColor: cardColor(card.id) }}
     >
       <span
         data-drag-handle
         aria-hidden
-        className={cn('flex h-5 w-5 shrink-0 touch-none items-center justify-center', style.handle)}
+        className="flex h-5 w-5 shrink-0 touch-none items-center justify-center text-white/60 group-hover/card:text-white"
       >
         <GripVertical className="size-4" />
       </span>
       <p
         className={cn(
           'min-w-0 flex-1 py-px leading-snug break-words whitespace-pre-wrap',
-          done && 'text-muted-foreground line-through decoration-muted-foreground/40',
+          done && 'text-white/85 line-through decoration-white/60',
         )}
       >
         {card.text}
@@ -101,7 +100,7 @@ export function CardItem({ card, editing, onStartEdit, onEndEdit, onDelete, onMo
               variant="ghost"
               size="icon-xs"
               aria-label={`Actions for “${card.text}”`}
-              className="-my-0.5 text-muted-foreground sm:opacity-0 sm:group-hover/card:opacity-100 sm:group-focus-within/card:opacity-100 sm:data-popup-open:opacity-100"
+              className="-my-0.5 text-white/80 hover:bg-white/20 hover:text-white aria-expanded:bg-white/20 aria-expanded:text-white sm:opacity-0 sm:group-hover/card:opacity-100 sm:group-focus-within/card:opacity-100 sm:data-popup-open:opacity-100"
             />
           }
         >
@@ -158,7 +157,11 @@ function CardEditor({ card, onEnd }: { card: Card; onEnd: (text: string | null, 
   }
 
   return (
-    <li data-card-id={card.id} className={cn('rounded-lg border-l-4 bg-card p-1.5 shadow-xs ring-2 ring-ring/60', COLUMN_STYLE[card.column].stripe)}>
+    <li
+      data-card-id={card.id}
+      className="rounded-lg p-1.5 text-white shadow-xs ring-2 ring-ring/60 ring-offset-2 ring-offset-background"
+      style={{ backgroundColor: cardColor(card.id) }}
+    >
       <Textarea
         aria-label="Card text"
         defaultValue={card.text}
@@ -175,7 +178,7 @@ function CardEditor({ card, onEnd }: { card: Card; onEnd: (text: string | null, 
             end(null)
           }
         }}
-        className="min-h-16 resize-none border-0 bg-transparent p-1 shadow-none focus-visible:ring-0 dark:bg-transparent"
+        className="min-h-16 resize-none border-0 bg-transparent p-1 text-white shadow-none selection:bg-white/30 focus-visible:ring-0 dark:bg-transparent"
       />
     </li>
   )

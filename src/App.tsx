@@ -8,7 +8,7 @@ import { cardsIn, COLUMNS, matches, type ColumnId } from './board'
 import { boardReducer } from './boardReducer'
 import { CARD_HINT_ID } from './CardItem'
 import { Column } from './Column'
-import { COLUMN_STYLE } from './columnStyle'
+import { cardColor } from './cardColor'
 import { findCard, focusCard, neighbourCard } from './focus'
 import { loadBoard, saveBoard } from './storage'
 import { useCardDrag } from './useCardDrag'
@@ -81,7 +81,6 @@ export default function App() {
   }, [status])
 
   const filtering = query.trim() !== ''
-  const dragColumn = drag && board.cards.find((c) => c.id === drag.id)?.column
   const total = board.cards.length
 
   return (
@@ -214,11 +213,8 @@ export default function App() {
       {drag && (
         <div
           aria-hidden
-          className={cn(
-            'pointer-events-none fixed top-0 left-0 z-50 flex items-start gap-1 rounded-lg border-l-4 bg-card py-2 pr-8 pl-0.5 text-sm shadow-xl ring-1 ring-foreground/15',
-            dragColumn && COLUMN_STYLE[dragColumn].stripe,
-          )}
-          style={{ width: drag.width, transform: `translate(${drag.left}px, ${drag.top}px) rotate(2deg)` }}
+          className="pointer-events-none fixed top-0 left-0 z-50 flex items-start gap-1 rounded-lg py-2 pr-8 pl-1 text-sm text-white shadow-xl ring-1 ring-black/15"
+          style={{ backgroundColor: cardColor(drag.id), width: drag.width, transform: `translate(${drag.left}px, ${drag.top}px) rotate(2deg)` }}
         >
           <span className="h-5 w-5 shrink-0" />
           <p className="min-w-0 flex-1 py-px leading-snug break-words whitespace-pre-wrap">{drag.text}</p>
